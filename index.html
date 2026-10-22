@@ -99,7 +99,7 @@ $('start').addEventListener('click',async()=>{
  busy=true;cancelled=false;$('start').disabled=true;$('processingName').textContent=file.name;$('processingStatus').textContent='LOADING ENGINE';$('processingNote').textContent='The first run downloads the FFmpeg engine. Keep this page open.';setProgress(1);page(1);
  const {createFFmpeg,fetchFile}=window.FFmpeg;
  try{
-  if(!ffmpeg){ffmpeg=createFFmpeg({log:false,corePath:'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',progress:({ratio})=>{if(Number.isFinite(ratio))setProgress(Math.max(3,Math.min(95,ratio*92)));}});}
+  if(!ffmpeg){ffmpeg=createFFmpeg({log:false,mainName:'main',corePath:'https://unpkg.com/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js',progress:({ratio})=>{if(Number.isFinite(ratio))setProgress(Math.max(3,Math.min(95,ratio*92)));}});}
   if(!ffmpeg.isLoaded())await ffmpeg.load();
   if(cancelled)throw new Error('Processing cancelled.');
   $('processingStatus').textContent='PROCESSING VIDEO';$('processingNote').textContent=mode==='max-quality'?'Copying the original encoded streams without re-encoding.':'Re-encoding video to H.264 (CRF 23).';
@@ -114,7 +114,7 @@ $('start').addEventListener('click',async()=>{
   cleanupOutput();const blob=new Blob([data],{type:'video/mp4'});outputUrl=URL.createObjectURL(blob);$('completePreview').src=outputUrl;$('download').href=outputUrl;$('download').download=file.name.replace(/\.[^/.]+$/,'')+'-neon-v3.mp4';
   $('resultInfo').textContent='Output: '+(blob.size/1048576).toFixed(2)+' MB · '+(mode==='max-quality'?'original video stream preserved':'H.264 re-encoded');$('processingStatus').textContent='COMPLETE';setProgress(100);page(2);
   try{ffmpeg.FS('unlink',inputName);}catch{}try{ffmpeg.FS('unlink',outputName);}catch{}
- }catch(err){page(0);showError('Processing failed: '+(err&&err.message?err.message:String(err))+' Try a shorter MP4 video and make sure the browser has enough memory.');}
+ }catch(err){page(0);const detail=err&&err.message?err.message:String(err);if(/SharedArrayBuffer|cross-origin|pthread/i.test(detail)){showError('This browser could not load the FFmpeg engine. NEON V3 now uses the single-thread core for GitHub Pages, which does not require SharedArrayBuffer. Reload the published page and try again. If this message remains, clear the site cache and check your internet connection.');}else{showError('Processing failed: '+detail+' If the error mentions memory, try a shorter MP4; phone storage space (256 GB) is different from available RAM.');}}
  finally{busy=false;$('start').disabled=!file;$('start').textContent='START PROCESSING →';}
 });
 $('cancel').addEventListener('click',()=>{if(busy){cancelled=true;$('processingNote').textContent='Cancelling after the current FFmpeg operation…';}else page(0);});
