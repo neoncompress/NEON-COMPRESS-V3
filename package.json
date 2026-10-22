@@ -1,0 +1,18 @@
+{
+  "name": "neon-compress-v3",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build --base=/NEON-COMPRESS-V3/",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@ffmpeg/ffmpeg": "0.12.15",
+    "@ffmpeg/util": "0.12.2"
+  },
+  "devDependencies": {
+    "vite": "^7.3.6"
+  }
+}
