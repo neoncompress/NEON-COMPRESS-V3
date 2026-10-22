@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="theme-color" content="#130609" />
-<title>NEON COMPRESS V3 — Video Studio</title>
+<title>NEON COMPRESS V2 — Video Studio</title>
 <style>
 :root{color-scheme:dark;--red:#ff334e;--text:#fff7f8;--muted:#cbb6bc;--border:rgba(255,255,255,.14)}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;background:#10070a;color:var(--text);min-height:100vh;overflow-x:hidden}button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.48}#sky{position:fixed;inset:0;width:100%;height:100%;z-index:10;pointer-events:none}body:before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at 10% 10%,#8c122b55,transparent 45%),radial-gradient(ellipse at 90% 90%,#8c152055,transparent 48%),linear-gradient(135deg,#18090f,#09080c 70%);z-index:-2}main{width:100%;max-width:1100px;margin:0 auto;padding:24px clamp(10px,2vw,28px) 80px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:30px}.brand{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:900;letter-spacing:.12em}.mark{width:37px;height:37px;border-radius:12px;background:linear-gradient(145deg,#ff6074,#b70929);display:grid;place-items:center;box-shadow:0 0 25px #ff24475e}.tag{border:1px solid #ff5e7780;background:#ff334e16;color:#ffb1be;border-radius:99px;padding:7px 11px;font-size:10px;font-weight:800;letter-spacing:.12em}.hero{text-align:center;margin-bottom:25px}.eyebrow{font-size:11px;letter-spacing:.32em;color:#ff9dae;font-weight:800}.hero h1{font-size:clamp(35px,9vw,55px);line-height:1.02;letter-spacing:-.055em;margin:12px 0 14px;font-weight:950}.hero h1 span{color:#ff3b57;text-shadow:0 0 45px #ff284455}.hero p{font-size:14px;color:var(--muted);line-height:1.6;margin:0}.steps{display:flex;gap:8px;margin:26px 0 18px}.step{flex:1;height:4px;border-radius:10px;background:#ffffff22}.step.active{background:linear-gradient(90deg,#ff2846,#ff9eac);box-shadow:0 0 15px #ff294877}.card{border:1px solid var(--border);background:linear-gradient(140deg,rgba(255,255,255,.11),rgba(255,255,255,.035));border-radius:24px;padding:clamp(18px,3vw,32px);box-shadow:0 18px 55px #0005;backdrop-filter:blur(16px);margin-bottom:15px}.label{color:#e9c8d0;font-size:11px;letter-spacing:.18em;font-weight:900}.row{display:flex;justify-content:space-between;align-items:center;gap:12px}.count{font-size:28px;font-weight:900;margin:8px 0 0}.count small{font-size:12px;font-weight:500;color:var(--muted)}.mini{padding:10px 13px;border-radius:12px;border:1px solid #ff4c6980;background:#ff3b541c;color:#ffb9c3;font-size:11px;font-weight:900}.card h2{font-size:21px;margin:10px 0 7px;letter-spacing:-.04em}.sub{font-size:13px;color:var(--muted);line-height:1.55;margin:0 0 18px}.drop{position:relative;border:1.5px dashed #ff75878c;border-radius:19px;min-height:230px;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;background:linear-gradient(145deg,#ff355112,#ffffff06);transition:.2s}.drop.drag{background:#ff334e2b;border-color:#ff879a}.drop input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}.upload-icon{font-size:31px;display:block;margin-bottom:10px}.drop strong{display:block;font-size:15px}.drop small{display:block;color:var(--muted);margin-top:8px;font-size:12px}.badge{display:inline-flex;margin:16px 0 0;padding:8px 12px;background:#ff334e1c;border:1px solid #ff6b8080;border-radius:99px;font-size:10px;letter-spacing:.1em;color:#ffbec7;font-weight:900}.file{display:none;margin-top:15px;border-radius:15px;background:#ffffff0d;padding:13px;overflow:hidden}.file strong{display:block;overflow-wrap:anywhere;font-size:13px}.file small{color:var(--muted)}video{width:100%;max-height:270px;margin-top:12px;border-radius:12px;background:#080808}.btn{border:0;width:100%;padding:16px 18px;border-radius:15px;font-size:13px;font-weight:900;letter-spacing:.08em;margin-top:13px;transition:transform .15s,filter .15s}.btn:active{transform:scale(.98)}.primary{color:white;background:linear-gradient(100deg,#ef183d,#ff596c);box-shadow:0 10px 30px #ed214645}.secondary{background:#ffffff12;border:1px solid #ffffff32;color:white}.note{font-size:11px;color:#bca4ac;line-height:1.6;text-align:center;margin:15px 0}.center{text-align:center;padding:30px 5px}.ring{width:170px;height:170px;border-radius:50%;margin:26px auto;display:grid;place-items:center;background:conic-gradient(var(--red) var(--progress,0%),#ffffff17 0);box-shadow:0 0 65px #ff30432c;position:relative}.ring:before{content:"";position:absolute;inset:13px;border-radius:50%;background:#1c0b12}.ring span{position:relative;font-size:38px;font-weight:900}.status{color:#ff9caf;font-size:12px;letter-spacing:.15em;font-weight:900}.success{font-size:55px;color:#ff536c;text-shadow:0 0 30px #ff345d}.guide{margin-top:16px}.guide ul{padding-left:20px;color:#e4cbd1;font-size:13px;line-height:2}.footer{text-align:center;margin:30px 0;color:#ff8799;font-size:11px;letter-spacing:.14em}.hidden{display:none!important}.overlay{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:18px;background:#08040995;backdrop-filter:blur(15px)}.modal{width:min(100%,560px);border-radius:27px;padding:30px 24px;background:linear-gradient(145deg,#35111d,#140b10);border:1px solid #ff7c906e;box-shadow:0 25px 100px #000b,0 0 75px #ff26402b;text-align:center}.modal .hello{font-size:34px;font-weight:950;letter-spacing:-.04em;margin:0;color:#fff}.modal h2{font-size:19px;margin:8px 0 22px;color:#ff93a4}.modal p{font-size:13px;color:#f0d7dd;line-height:1.8}.modal p+p{border-top:1px solid #ffffff16;padding-top:12px}.screen{animation:appear .3s ease}@keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
@@ -42,7 +42,7 @@
 <div class="lantern-sky" id="lanternSky" aria-hidden="true"></div>
 <canvas id="sky" aria-hidden="true"></canvas>
 <main id="app">
-<header class="top"><div class="brand"><span class="mark">✦</span> NEON COMPRESS</div><span class="tag">V3 • MAX QUALITY</span></header>
+<header class="top"><div class="brand"><span class="mark">✦</span> NEON COMPRESS</div><span class="tag">V2 • MAX QUALITY</span></header>
 <section class="hero"><div class="eyebrow">NEON</div><h1><span>QUALITY</span><br>COMPRESS</h1><p>Premium video optimization · NEON COMPRESS V2</p></section>
 <div class="steps" aria-label="Progress"><div class="step active"></div><div class="step"></div><div class="step"></div></div>
 <section id="uploadScreen" class="screen">
@@ -53,15 +53,8 @@
 <section id="completeScreen" class="screen hidden"><div class="card center"><div class="success">✦</div><div class="label">03 / COMPLETE</div><h2>Video complete!</h2><p class="sub">Your optimized MP4 is ready to download.</p><video id="completePreview" controls playsinline></video><button class="btn primary" id="download" type="button">DOWNLOAD VIDEO ↓</button><p class="note">Video and audio streams are preserved without re-encoding.</p><button class="btn secondary" id="again" type="button">← OPTIMIZE ANOTHER VIDEO</button></div><div class="card guide"><div class="label">RECOMMENDED UPLOAD METHOD</div><ul><li>Upload using Microsoft Edge.</li><li>You don't need to set your video to “Only Me”.</li><li>Enable Desktop Site mode when supported.</li><li>Avoid re-editing your downloaded video.</li></ul><div class="badge">SUPPORT: #NEONCOMPRESS</div></div><div class="card thadingyut-card"><div class="festival-icon" aria-hidden="true">✦ ✧ ✦</div><div class="label">THADINGYUT FESTIVAL</div><div class="festival-scene" aria-hidden="true"><span class="festival-lantern" style="--left:9%;--fs:33px">🏮</span><span class="festival-lantern" style="--left:37%;--fs:41px;--delay:-1s">🏮</span><span class="festival-lantern" style="--left:76%;--fs:35px;--delay:-2s">🏮</span><div class="candle-row"><span class="candle"></span><span class="candle"></span><span class="candle"></span><span class="candle"></span><span class="candle"></span><span class="candle"></span><span class="candle"></span></div></div><h2>HAPPY THADINGYUT!</h2><p>Wishing you a joyful and bright Thadingyut Festival. 🏮 🕯️ 🎆</p><div class="festival-icon" aria-hidden="true">✧ ✦ ✧</div></div></section>
 <footer class="footer">NEON COMPRESS © 2026 · BUILT FOR CREATORS</footer>
 </main>
-<div class="overlay" id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle"><div class="modal"><div class="eyebrow">WELCOME TO THE EXPERIENCE</div><h1 class="hello" id="welcomeTitle">MINGALARPAR</h1><h2>Welcome to NEON COMPRESS</h2><p>Please check your internet connection before processing. An unstable connection may cause errors.</p><p>MAX QUALITY preserves your video’s original resolution and FPS. Please upload 1080p MP4 if you want 1080p output.</p><p>For the best experience, use Microsoft Edge, Quetta, or Google Chrome.</p><button
-  class="btn primary"
-  id="continue"
-  type="button"
-  onclick="document.getElementById('welcome').classList.add('hidden'); try { sessionStorage.setItem('neon-welcomed','1'); } catch(e) {}"
->
-  CONTINUE →
-</button></div></div>
-<script type="module">
+<div class="overlay" id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle"><div class="modal"><div class="eyebrow">WELCOME TO THE EXPERIENCE</div><h1 class="hello" id="welcomeTitle">MINGALARPAR</h1><h2>Welcome to NEON COMPRESS</h2><p>Please check your internet connection before processing. An unstable connection may cause errors.</p><p>MAX QUALITY preserves your video’s original resolution and FPS. Please upload 1080p MP4 if you want 1080p output.</p><p>For the best experience, use Microsoft Edge, Quetta, or Google Chrome.</p><button class="btn primary" id="continue" type="button">CONTINUE →</button></div></div>
+<script>
 (async()=>{'use strict';
 const $=id=>document.getElementById(id);let file=null,url=null,progress=0,outputUrl=null,outputBlob=null,ffmpeg=null,busy=false,cancelRequested=false;const screens=['uploadScreen','processingScreen','completeScreen'];
 // Lightweight CSS sparkles surrounding the processing percentage ring.
@@ -81,25 +74,7 @@ function page(n){screens.forEach((id,i)=>$(id).classList.toggle('hidden',i!==n))
  function setFile(f){if(!f)return;if(!/\.mp4$/i.test(f.name)){alert('MAX QUALITY requires an MP4 file.');return;}if(busy)return;if(url)URL.revokeObjectURL(url);if(outputUrl)URL.revokeObjectURL(outputUrl);outputUrl=null;outputBlob=null;file=f;url=URL.createObjectURL(f);$('fileName').textContent=f.name;$('fileSize').textContent=(f.size/1048576).toFixed(1)+' MB';$('uploadPreview').src=url;$('fileBox').style.display='block';$('start').disabled=false;}
  function setProgress(n){progress=Math.max(0,Math.min(100,Math.round(n)));$('percentage').textContent=progress+'%';$('ring').style.setProperty('--progress',progress+'%');}
  function reset(){if(busy)return;$('uploadPreview').pause();$('completePreview').pause();$('uploadPreview').removeAttribute('src');$('completePreview').removeAttribute('src');$('uploadPreview').load();$('completePreview').load();if(url)URL.revokeObjectURL(url);if(outputUrl)URL.revokeObjectURL(outputUrl);url=null;outputUrl=null;outputBlob=null;file=null;$('videoInput').value='';$('fileBox').style.display='none';$('start').disabled=true;setProgress(0);page(0);}
- const welcome = $('welcome');
-
-try {
-  if (sessionStorage.getItem('neon-welcomed') === '1') {
-    welcome.classList.add('hidden');
-  }
-} catch (error) {
-  console.warn('Session storage unavailable:', error);
-}
-
-$('continue').addEventListener('click', () => {
-  welcome.classList.add('hidden');
-
-  try {
-    sessionStorage.setItem('neon-welcomed', '1');
-  } catch (error) {
-    console.warn('Could not save welcome state:', error);
-  }
-});
+ $('continue').addEventListener('click',()=>{$('welcome').classList.add('hidden');sessionStorage.setItem('neon-welcomed','1');});if(sessionStorage.getItem('neon-welcomed')==='1')$('welcome').classList.add('hidden');
  $('videoInput').addEventListener('change',e=>setFile(e.target.files[0]));$('replace').addEventListener('click',()=>$('videoInput').click());
  const drop=$('drop');drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('drag');});drop.addEventListener('dragleave',()=>drop.classList.remove('drag'));drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('drag');setFile(e.dataTransfer.files[0]);});
  $('unlimited').addEventListener('click',()=>alert('Unlimited access is coming soon. Daily limit shown is illustrative.'));
@@ -108,25 +83,21 @@ $('continue').addEventListener('click', () => {
   const inputName='neon-input-'+Date.now()+'.mp4',outputName='neon-output-'+Date.now()+'.mp4';
   let progressHandler=null;
   try{
+   const {FFmpeg}=await import('https://esm.sh/@ffmpeg/ffmpeg@0.12.15');
+   const {toBlobURL}=await import('https://esm.sh/@ffmpeg/util@0.12.2');
+   if(!ffmpeg)ffmpeg=new FFmpeg();
+   if(!ffmpeg.loaded){$('processingName').textContent='Loading FFmpeg engine…';const base='https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm';await ffmpeg.load({coreURL:await toBlobURL(base+'/ffmpeg-core.js','text/javascript'),wasmURL:await toBlobURL(base+'/ffmpeg-core.wasm','application/wasm')});}
    if(cancelRequested)throw new Error('Cancelled');
-
-$('processingName').textContent='Optimizing '+file.name;
-
-const { optimizeVideo } = await import('./src/processing.js');
-
-const result = await optimizeVideo(file, (progress) => {
-  setProgress(progress);
-});
-
-if(cancelRequested)throw new Error('Cancelled');
-
-outputBlob = result.blob;
-outputUrl = URL.createObjectURL(outputBlob);
-
-$('completePreview').src = outputUrl;
-
-setProgress(100);
-page(2);
+   progressHandler=({progress:p})=>{if(Number.isFinite(p))setProgress(Math.max(4,Math.min(96,p*92)));};ffmpeg.on('progress',progressHandler);
+   $('processingName').textContent='Reading '+file.name;
+   const bytes=new Uint8Array(await file.arrayBuffer());if(cancelRequested)throw new Error('Cancelled');
+   await ffmpeg.writeFile(inputName,bytes);setProgress(4);
+   $('processingName').textContent='Optimizing '+file.name;
+   // Exact MAX QUALITY FFmpeg arguments from the original working V1 App.tsx.
+   const code=await ffmpeg.exec(['-i',inputName,'-map','0:v:0','-map','0:a?','-c','copy','-movflags','+faststart','-y',outputName]);
+   if(cancelRequested)throw new Error('Cancelled');if(code!==0)throw new Error('FFmpeg exited with code '+code);
+   const data=await ffmpeg.readFile(outputName);if(!(data instanceof Uint8Array)||!data.length)throw new Error('No output video was produced');
+   outputBlob=new Blob([new Uint8Array(data)],{type:'video/mp4'});outputUrl=URL.createObjectURL(outputBlob);$('completePreview').src=outputUrl;setProgress(100);page(2);
   }catch(err){if(!cancelRequested)alert('Video processing failed: '+(err?.message||String(err))+'\nTry a smaller MP4 or a browser with enough free memory.');page(0);}
   finally{if(ffmpeg&&progressHandler)ffmpeg.off('progress',progressHandler);if(ffmpeg){for(const name of [inputName,outputName]){try{await ffmpeg.deleteFile(name)}catch{}}}busy=false;$('start').disabled=!file;}
  });
@@ -143,18 +114,7 @@ for(let i=0;i<13;i++){
   el.style.setProperty('--delay',(-i*2.1)+'s');
   lanternSky.appendChild(el);
 }
-const canvas = $('sky');
-const ctx = canvas ? canvas.getContext('2d') : null;
-
-let particles = [];
-let rockets = [];
-let w = 0;
-let h = 0;
-let last = 0;
-
-const reduced = window.matchMedia(
-  '(prefers-reduced-motion: reduce)'
-).matches;
+const canvas=$('sky'),ctx=canvas.getContext('2d');if(!ctx)return;let particles=[],rockets=[],w=0,h=0,last=0;const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 function resize(){w=canvas.width=innerWidth*devicePixelRatio;h=canvas.height=innerHeight*devicePixelRatio;ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);w=innerWidth;h=innerHeight;}resize();addEventListener('resize',resize);
 function burst(x,y,white=false){
   const amount=white?30:34;
