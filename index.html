@@ -83,22 +83,48 @@ function page(n){screens.forEach((id,i)=>$(id).classList.toggle('hidden',i!==n))
   const inputName='neon-input-'+Date.now()+'.mp4',outputName='neon-output-'+Date.now()+'.mp4';
   let progressHandler=null;
   try{
-   const {FFmpeg}=await import('https://esm.sh/@ffmpeg/ffmpeg@0.12.15');
-   const {toBlobURL}=await import('https://esm.sh/@ffmpeg/util@0.12.2');
-   if(!ffmpeg)ffmpeg=new FFmpeg();
-   if(!ffmpeg.loaded){$('processingName').textContent='Loading FFmpeg engine…';const base='https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm';await ffmpeg.load({coreURL:await toBlobURL(base+'/ffmpeg-core.js','text/javascript'),wasmURL:await toBlobURL(base+'/ffmpeg-core.wasm','application/wasm')});}
+   // UMD build avoids esm.sh's blocked cross-origin dynamic module import.
+   // A blob-backed worker avoids GitHub Pages cross-origin Worker restrictions.
+   async function blobURL(remote,mime){
+     const response=await fetch(remote);
+     if(!response.ok)throw new Error('FFmpeg resource download failed ('+response.status+'): '+remote);
+     return URL.createObjectURL(new Blob([await response.arrayBuffer()],{type:mime}));
+   }
+   if(!window.FFmpegWASM?.FFmpeg){
+     $('processingName').textContent='Loading FFmpeg JavaScript…';
+     await new Promise((resolve,reject)=>{
+       const script=document.createElement('script');
+       script.src='https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/umd/ffmpeg.js';
+       script.onload=resolve;script.onerror=()=>reject(new Error('Cannot load FFmpeg script from CDN'));
+       document.head.appendChild(script);
+     });
+   }
+   if(!window.FFmpegWASM?.FFmpeg)throw new Error('FFmpeg library was not initialized');
+   if(!ffmpeg)ffmpeg=new window.FFmpegWASM.FFmpeg();
+   if(!ffmpeg.loaded){
+     $('processingName').textContent='Downloading FFmpeg engine (first run may take time)…';
+     const wrapper='https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/umd';
+     const core='https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd';
+     const [classWorkerURL,coreURL,wasmURL]=await Promise.all([
+       blobURL(wrapper+'/814.ffmpeg.js','text/javascript'),
+       blobURL(core+'/ffmpeg-core.js','text/javascript'),
+       blobURL(core+'/ffmpeg-core.wasm','application/wasm')
+     ]);
+     try{await ffmpeg.load({classWorkerURL,coreURL,wasmURL});}
+     finally{URL.revokeObjectURL(classWorkerURL);URL.revokeObjectURL(coreURL);URL.revokeObjectURL(wasmURL);}
+   }
    if(cancelRequested)throw new Error('Cancelled');
    progressHandler=({progress:p})=>{if(Number.isFinite(p))setProgress(Math.max(4,Math.min(96,p*92)));};ffmpeg.on('progress',progressHandler);
    $('processingName').textContent='Reading '+file.name;
    const bytes=new Uint8Array(await file.arrayBuffer());if(cancelRequested)throw new Error('Cancelled');
    await ffmpeg.writeFile(inputName,bytes);setProgress(4);
    $('processingName').textContent='Optimizing '+file.name;
-   // Exact MAX QUALITY FFmpeg arguments from the original working V1 App.tsx.
+   // Stream-copy MP4 remux (no re-encoding). This does not increase visual quality.
    const code=await ffmpeg.exec(['-i',inputName,'-map','0:v:0','-map','0:a?','-c','copy','-movflags','+faststart','-y',outputName]);
    if(cancelRequested)throw new Error('Cancelled');if(code!==0)throw new Error('FFmpeg exited with code '+code);
    const data=await ffmpeg.readFile(outputName);if(!(data instanceof Uint8Array)||!data.length)throw new Error('No output video was produced');
    outputBlob=new Blob([new Uint8Array(data)],{type:'video/mp4'});outputUrl=URL.createObjectURL(outputBlob);$('completePreview').src=outputUrl;setProgress(100);page(2);
-  }catch(err){if(!cancelRequested)alert('Video processing failed: '+(err?.message||String(err))+'\nTry a smaller MP4 or a browser with enough free memory.');page(0);}
+  }catch(err){if(!cancelRequested)alert('Video processing failed: '+(err?.message||String(err))+'\nCheck internet access to the FFmpeg CDN, then try a smaller MP4 if needed.');page(0);}
   finally{if(ffmpeg&&progressHandler)ffmpeg.off('progress',progressHandler);if(ffmpeg){for(const name of [inputName,outputName]){try{await ffmpeg.deleteFile(name)}catch{}}}busy=false;$('start').disabled=!file;}
  });
  $('download').addEventListener('click',()=>{if(!outputBlob||!outputUrl)return;const a=document.createElement('a');a.href=outputUrl;a.download=(file?.name||'video.mp4').replace(/\.mp4$/i,'')+'-neon-max-quality.mp4';document.body.appendChild(a);a.click();a.remove();});
