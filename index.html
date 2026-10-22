@@ -81,11 +81,13 @@ for(let i=0;i<26;i++){
 }
 function page(n){screens.forEach((id,i)=>$(id).classList.toggle('hidden',i!==n));document.querySelectorAll('.step').forEach((el,i)=>el.classList.toggle('active',i<=n));window.scrollTo({top:0,behavior:'smooth'});}
 function setFile(f){if(!f)return;const valid=['video/mp4','video/quicktime','video/webm','video/x-m4v','video/mpeg'];if(!valid.includes(f.type)&&!(/\.(mp4|mov|webm|m4v|mpeg|mpg)$/i).test(f.name)){alert('Please choose an MP4, MOV, WEBM or MPEG video.');return;}if(!f.size){alert('This video file is empty.');return;}if(url)URL.revokeObjectURL(url);file=f;url=URL.createObjectURL(f);$('fileName').textContent=f.name;$('fileSize').textContent=(f.size/1048576).toFixed(1)+' MB';$('uploadPreview').src=url;$('fileBox').style.display='block';$('start').disabled=false;$('engineNote').textContent='Selected: '+f.name+' · Processing runs locally in this browser.';}
-function setProgress(value){progress=Math.max(0,Math.min(100,Math.round(value)));$('percentage').textContent=progress+'\%';$('ring').style.setProperty('--progress',progress+'%');}
+function setProgress(value){progress=Math.max(0,Math.min(100,Math.round(value)));$('percentage').textContent=progress+'%';$('ring').style.setProperty('--progress',progress+'%');}
 function cleanupOutput(){if(outputUrl){URL.revokeObjectURL(outputUrl);outputUrl=null;} $('download').removeAttribute('href');}
 function reset(){if(busy)return; $('uploadPreview').pause();$('completePreview').pause();$('uploadPreview').removeAttribute('src');$('completePreview').removeAttribute('src');$('uploadPreview').load();$('completePreview').load();if(url)URL.revokeObjectURL(url);url=null;file=null;cleanupOutput();$('videoInput').value='';$('fileBox').style.display='none';$('start').disabled=true;$('start').textContent='START PROCESSING →';$('errorBox')?.remove();setProgress(0);$('saveMessage').textContent='MAX QUALITY preserves the source stream; it cannot restore detail missing from the original.';page(0);}
-$('continue').addEventListener('click',()=>{$('welcome').classList.add('hidden');try{sessionStorage.setItem('neon-v3-welcomed','1');}catch{}});try{if(sessionStorage.getItem('neon-v3-welcomed')==='1')$('welcome').classList.add('hidden');}catch{}$('videoInput').addEventListener('change',e=>setFile(e.target.files[0]));$('replace').addEventListener('click',()=>$('videoInput').click());
-const drop=$('drop');drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('drag');});drop.addEventListener('dragleave',()=>drop.classList.remove('drag'));drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('drag');setFile(e.dataTransfer.files[0]);});$('unlimited').addEventListener('click',()=>alert('Daily limits are not implemented in this local version.'));
+$('continue').addEventListener('click',()=>{$('welcome').classList.add('hidden');try{sessionStorage.setItem('neon-v3-welcomed','1');}catch{}});try{if(sessionStorage.getItem('neon-v3-welcomed')==='1')$('welcome').classList.add('hidden');}catch{}
+$('videoInput').addEventListener('change',e=>setFile(e.target.files[0]));$('replace').addEventListener('click',()=>$('videoInput').click());
+const drop=$('drop');drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('drag');});drop.addEventListener('dragleave',()=>drop.classList.remove('drag'));drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('drag');setFile(e.dataTransfer.files[0]);});
+$('unlimited').addEventListener('click',()=>alert('Daily limits are not implemented in this local version.'));
 function showError(message){let box=$('errorBox');if(!box){box=document.createElement('div');box.id='errorBox';box.className='card';box.style.cssText='border-color:#ff334e;color:#ffd7dd;line-height:1.6';$('uploadScreen').prepend(box);}box.textContent=message;}
 
 $('start').addEventListener('click',async()=>{
@@ -95,7 +97,8 @@ $('start').addEventListener('click',async()=>{
  
  try{
   const result = await optimizeVideo(file, (p) => {
-    $('processingStatus').textContent='PROCESSING VIDEO';$('processingNote').textContent='Copying original streams without re-encoding.';
+    $('processingStatus').textContent='PROCESSING VIDEO';
+    $('processingNote').textContent='Copying original streams without re-encoding.';
     setProgress(p);
   });
   
@@ -119,8 +122,9 @@ $('start').addEventListener('click',async()=>{
  }
 });
 
-$('cancel').addEventListener('click',()=>{page(0);});$('again').addEventListener('click',reset);
-$('saveVideo').addEventListener('click',async()=>{if(!outputUrl\vert{}\vert{}!file)return;const outFile=new File([await (await fetch(outputUrl)).blob()],$('download').download,{type:'video/mp4'});const shareData={files:[outFile],title:'NEON COMPRESS V3',text:'Processed video'};if(navigator.canShare&&navigator.share&&navigator.canShare(shareData)){try{await navigator.share(shareData);$('saveMessage').textContent='Choose Gallery or Photos in the share sheet to save the video.';}catch(e){if(e.name!=='AbortError')$('saveMessage').textContent='Sharing was unavailable. Use DOWNLOAD VIDEO and open the file from Downloads.';}}else{$('download').click();$('saveMessage').textContent='Download started. Open the MP4 from your Downloads folder.';}});
+$('cancel').addEventListener('click',()=>{page(0);});
+$('again').addEventListener('click',reset);
+$('saveVideo').addEventListener('click',async()=>{if(!outputUrl||!file)return;const outFile=new File([await (await fetch(outputUrl)).blob()],$('download').download,{type:'video/mp4'});const shareData={files:[outFile],title:'NEON COMPRESS V3',text:'Processed video'};if(navigator.canShare&&navigator.share&&navigator.canShare(shareData)){try{await navigator.share(shareData);$('saveMessage').textContent='Choose Gallery or Photos in the share sheet to save the video.';}catch(e){if(e.name!=='AbortError')$('saveMessage').textContent='Sharing was unavailable. Use DOWNLOAD VIDEO and open the file from Downloads.';}}else{$('download').click();$('saveMessage').textContent='Download started. Open the MP4 from your Downloads folder.';}});
 window.addEventListener('beforeunload',()=>{if(url)URL.revokeObjectURL(url);if(outputUrl)URL.revokeObjectURL(outputUrl);});
 
 // Decorative sky lanterns
@@ -156,7 +160,6 @@ function draw(t){
   rockets=rockets.filter(r=>{
     r.trail.push({x:r.x,y:r.y});if(r.trail.length>12)r.trail.shift();
     r.y-=r.speed;
-    r.trail.exports&&(r.trail.forEach((p,i)=>{ctx.beginPath();ctx.fillStyle=`rgba(255,${i%2?255:75},${i%2?255:100},${(i+1)/r.trail.length*.75})`;ctx.arc(p.x,p.y,1.5,0,Math.PI*2);ctx.fill();}));
     r.trail.forEach((p,i)=>{ctx.beginPath();ctx.fillStyle=`rgba(255,${i%2?255:75},${i%2?255:100},${(i+1)/r.trail.length*.75})`;ctx.arc(p.x,p.y,1.5,0,Math.PI*2);ctx.fill();});
     if(r.y<=r.targetY){burst(r.x,r.y);return false;}return true;
   });
