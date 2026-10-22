@@ -54,7 +54,8 @@
 <footer class="footer">NEON COMPRESS © 2026 · BUILT FOR CREATORS</footer>
 </main>
 <div class="overlay" id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle"><div class="modal"><div class="eyebrow">WELCOME TO THE EXPERIENCE</div><h1 class="hello" id="welcomeTitle">MINGALARPAR</h1><h2>Welcome to NEON COMPRESS</h2><p>Please check your internet connection before processing. An unstable connection may cause errors.</p><p>MAX QUALITY preserves your video’s original resolution and FPS. Please upload 1080p MP4 if you want 1080p output.</p><p>For the best experience, use Microsoft Edge, Quetta, or Google Chrome.</p><button class="btn primary" id="continue" type="button">CONTINUE →</button></div></div>
-<script>
+<script type="module">
+ import { optimizeVideo } from './src/processing.js';
 (async()=>{'use strict';
 const $=id=>document.getElementById(id);let file=null,url=null,progress=0,outputUrl=null,outputBlob=null,ffmpeg=null,busy=false,cancelRequested=false;const screens=['uploadScreen','processingScreen','completeScreen'];
 // Lightweight CSS sparkles surrounding the processing percentage ring.
@@ -83,21 +84,23 @@ function page(n){screens.forEach((id,i)=>$(id).classList.toggle('hidden',i!==n))
   const inputName='neon-input-'+Date.now()+'.mp4',outputName='neon-output-'+Date.now()+'.mp4';
   let progressHandler=null;
   try{
-   const {FFmpeg}=await import('https://esm.sh/@ffmpeg/ffmpeg@0.12.15');
-   const {toBlobURL}=await import('https://esm.sh/@ffmpeg/util@0.12.2');
-   if(!ffmpeg)ffmpeg=new FFmpeg();
-   if(!ffmpeg.loaded){$('processingName').textContent='Loading FFmpeg engine…';const base='https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm';await ffmpeg.load({coreURL:await toBlobURL(base+'/ffmpeg-core.js','text/javascript'),wasmURL:await toBlobURL(base+'/ffmpeg-core.wasm','application/wasm')});}
    if(cancelRequested)throw new Error('Cancelled');
-   progressHandler=({progress:p})=>{if(Number.isFinite(p))setProgress(Math.max(4,Math.min(96,p*92)));};ffmpeg.on('progress',progressHandler);
-   $('processingName').textContent='Reading '+file.name;
-   const bytes=new Uint8Array(await file.arrayBuffer());if(cancelRequested)throw new Error('Cancelled');
-   await ffmpeg.writeFile(inputName,bytes);setProgress(4);
-   $('processingName').textContent='Optimizing '+file.name;
-   // Exact MAX QUALITY FFmpeg arguments from the original working V1 App.tsx.
-   const code=await ffmpeg.exec(['-i',inputName,'-map','0:v:0','-map','0:a?','-c','copy','-movflags','+faststart','-y',outputName]);
-   if(cancelRequested)throw new Error('Cancelled');if(code!==0)throw new Error('FFmpeg exited with code '+code);
-   const data=await ffmpeg.readFile(outputName);if(!(data instanceof Uint8Array)||!data.length)throw new Error('No output video was produced');
-   outputBlob=new Blob([new Uint8Array(data)],{type:'video/mp4'});outputUrl=URL.createObjectURL(outputBlob);$('completePreview').src=outputUrl;setProgress(100);page(2);
+
+$('processingName').textContent='Optimizing '+file.name;
+
+const result = await optimizeVideo(file, (progress) => {
+  setProgress(progress);
+});
+
+if(cancelRequested)throw new Error('Cancelled');
+
+outputBlob = result.blob;
+outputUrl = URL.createObjectURL(outputBlob);
+
+$('completePreview').src = outputUrl;
+
+setProgress(100);
+page(2);
   }catch(err){if(!cancelRequested)alert('Video processing failed: '+(err?.message||String(err))+'\nTry a smaller MP4 or a browser with enough free memory.');page(0);}
   finally{if(ffmpeg&&progressHandler)ffmpeg.off('progress',progressHandler);if(ffmpeg){for(const name of [inputName,outputName]){try{await ffmpeg.deleteFile(name)}catch{}}}busy=false;$('start').disabled=!file;}
  });
