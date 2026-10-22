@@ -55,7 +55,6 @@
 </main>
 <div class="overlay" id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle"><div class="modal"><div class="eyebrow">WELCOME TO THE EXPERIENCE</div><h1 class="hello" id="welcomeTitle">MINGALARPAR</h1><h2>Welcome to NEON COMPRESS</h2><p>Please check your internet connection before processing. An unstable connection may cause errors.</p><p>MAX QUALITY preserves your video’s original resolution and FPS. Please upload 1080p MP4 if you want 1080p output.</p><p>For the best experience, use Microsoft Edge, Quetta, or Google Chrome.</p><button class="btn primary" id="continue" type="button">CONTINUE →</button></div></div>
 <script type="module">
- import { optimizeVideo } from './src/processing.js';
 (async()=>{'use strict';
 const $=id=>document.getElementById(id);let file=null,url=null,progress=0,outputUrl=null,outputBlob=null,ffmpeg=null,busy=false,cancelRequested=false;const screens=['uploadScreen','processingScreen','completeScreen'];
 // Lightweight CSS sparkles surrounding the processing percentage ring.
@@ -87,6 +86,8 @@ function page(n){screens.forEach((id,i)=>$(id).classList.toggle('hidden',i!==n))
    if(cancelRequested)throw new Error('Cancelled');
 
 $('processingName').textContent='Optimizing '+file.name;
+
+const { optimizeVideo } = await import('./src/processing.js');
 
 const result = await optimizeVideo(file, (progress) => {
   setProgress(progress);
