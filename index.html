@@ -36,27 +36,36 @@
 @keyframes spark-orbit{to{transform:rotate(360deg)}}
 @keyframes ember-twinkle{from{opacity:.25;filter:brightness(.8);scale:.7}to{opacity:1;filter:brightness(1.6);scale:1.4}}
 @media(prefers-reduced-motion:reduce){.ring .ring-sparks{animation:none}.ring .ring-sparks i{animation:none}}
+
+/* Account UI — independent from video processing */
+.account-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.account-actions button{width:auto;margin:0;padding:9px 12px;font-size:11px}.account-panel{max-width:620px;margin:0 auto 16px}.account-form{display:grid;gap:10px;margin-top:12px}.account-form input{width:100%;padding:13px 14px;background:#12090e;border:1px solid #ffffff44;color:#fff;border-radius:12px;font-size:14px}.account-form label{text-align:left;color:#eed5dc;font-size:12px}.account-form .btn{margin-top:2px}.account-status{font-size:12px;line-height:1.6;color:#ffbec7;overflow-wrap:anywhere}.account-email{overflow-wrap:anywhere;color:#ffb4c2;font-size:12px}.account-panel .mini{margin:4px}.account-panel button:focus-visible,.account-panel input:focus-visible{outline:2px solid #ff879a;outline-offset:2px}@media(max-width:500px){.top{flex-wrap:wrap}.account-actions{width:100%;justify-content:flex-start}}
+
+.pay-grid{display:grid;gap:10px;margin:12px 0}.pay-grid label{font-size:12px;color:#eed5dc}.pay-grid select,.pay-grid input{width:100%;padding:13px;border:1px solid #ffffff44;border-radius:12px;background:#1b0c12;color:white}.pay-grid input[type=file]{font-size:12px}.pay-grid select option{background:#1b0c12}.pay-help{color:#f2c5d0;font-size:12px;line-height:1.65}.pay-requests{font-size:12px;line-height:1.8;overflow-wrap:anywhere}.pay-requests>div{border-bottom:1px solid #ffffff22;padding:8px 0}
 </style>
 </head>
 <body>
 <div class="lantern-sky" id="lanternSky" aria-hidden="true"></div>
 <canvas id="sky" aria-hidden="true"></canvas>
 <main id="app">
-<header class="top"><div class="brand"><span class="mark">✦</span> NEON COMPRESS</div><span class="tag">V2 • MAX QUALITY</span></header>
-<section class="hero"><div class="eyebrow">NEON</div><h1><span>QUALITY</span><br>COMPRESS</h1><p>Premium video optimization · NEON COMPRESS V2</p></section>
+<header class="top"><div class="brand"><span class="mark">✦</span> NEON COMPRESS</div><div class="account-actions"><span class="tag">V3 • VIDEO STUDIO</span></div></header>
+<section class="hero"><div class="eyebrow">NEON</div><h1><span>QUALITY</span><br>COMPRESS</h1><p>Premium video optimization · NEON COMPRESS V3</p></section>
 <div class="steps" aria-label="Progress"><div class="step active"></div><div class="step"></div><div class="step"></div></div>
 <section id="uploadScreen" class="screen">
-<div class="card"><div class="row"><div><div class="label">DAILY LIMIT</div><div class="count">5 / 5 <small>remaining · demo</small></div></div><button class="mini" id="unlimited" type="button">✦ UNLIMITED</button></div></div>
-<div class="card"><div class="label">01 / GET STARTED</div><h2>Choose your video</h2><p class="sub">Select an MP4 video for lossless stream-copy optimization.</p><div class="drop" id="drop"><input id="videoInput" type="file" accept="video/mp4,.mp4" aria-label="Choose a video"><div><span class="upload-icon">↑</span><strong>Tap to choose your video</strong><small>MP4 only · Drag & drop on desktop</small></div></div><div class="badge">PLEASE UPLOAD YOUR VIDEO IN 1080P</div><div class="file" id="fileBox"><strong id="fileName"></strong><small id="fileSize"></small><video id="uploadPreview" controls playsinline></video><button class="btn secondary" id="replace" type="button">REPLACE VIDEO</button></div><button class="btn primary" id="start" type="button" disabled>START PROCESSING →</button><p class="note">MAX QUALITY preserves the original video and audio streams. It does not upscale to 1080p.</p></div>
+<div class="card"><div class="row"><div><div class="label">PROCESSING ACCESS</div><div class="count"><span>UNLIMITED ∞</span> <small>no daily limit</small></div></div></div></div>
+<div class="card"><div class="label">01 / GET STARTED</div><h2>Choose your video</h2><p class="sub">Select an MP4 video to optimize without re-encoding.</p><div class="drop" id="drop"><input id="videoInput" type="file" accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.webm" aria-label="Choose a video"><div><span class="upload-icon">↑</span><strong>Tap to choose your video</strong><small>MP4, MOV or WEBM · Drag & drop on desktop</small></div></div><div class="badge">PLEASE UPLOAD YOUR VIDEO IN 1080P</div><div class="file" id="fileBox"><strong id="fileName"></strong><small id="fileSize"></small><video id="uploadPreview" controls playsinline></video><button class="btn secondary" id="replace" type="button">REPLACE VIDEO</button></div><button class="btn primary" id="start" type="button" disabled>START PROCESSING →</button><p class="note">MAX QUALITY preserves original video and audio streams; TikTok may still recompress uploads.</p><p id="errorMessage" class="note hidden" role="alert" style="color:#ff8fa2;font-weight:700"></p></div>
 </section>
-<section id="processingScreen" class="screen hidden"><div class="card center"><div class="label">02 / PROCESSING</div><h2>Optimizing your video</h2><p class="sub">Preserving your original video quality. Please keep this tab open.</p><div class="ring" id="ring"><div class="ring-sparks" aria-hidden="true" id="ringSparks"></div><span id="percentage">0%</span></div><div class="status">PROCESSING VIDEO</div><p class="sub" id="processingName"></p><p class="note">Progress is based on FFmpeg processing and may update unevenly.</p><button class="btn secondary" id="cancel" type="button">CANCEL PROCESSING</button></div></section>
-<section id="completeScreen" class="screen hidden"><div class="card center"><div class="success">✦</div><div class="label">03 / COMPLETE</div><h2>Video complete!</h2><p class="sub">Your optimized MP4 is ready to download.</p><video id="completePreview" controls playsinline></video><button class="btn primary" id="download" type="button">DOWNLOAD VIDEO ↓</button><p class="note">Video and audio streams are preserved without re-encoding.</p><button class="btn secondary" id="again" type="button">← OPTIMIZE ANOTHER VIDEO</button></div><div class="card guide"><div class="label">RECOMMENDED UPLOAD METHOD</div><ul><li>Upload using Microsoft Edge.</li><li>You don't need to set your video to “Only Me”.</li><li>Enable Desktop Site mode when supported.</li><li>Avoid re-editing your downloaded video.</li></ul><div class="badge">SUPPORT: #NEONCOMPRESS</div></div><div class="card thadingyut-card"><div class="festival-icon" aria-hidden="true">✦ ✧ ✦</div><div class="label">THADINGYUT FESTIVAL</div><div class="festival-scene" aria-hidden="true"><span class="festival-lantern" style="--left:9%;--fs:33px">🏮</span><span class="festival-lantern" style="--left:37%;--fs:41px;--delay:-1s">🏮</span><span class="festival-lantern" style="--left:76%;--fs:35px;--delay:-2s">🏮</span><div class="candle-row"><span class="candle"></span><span class="candle"></span><span class="candle"></span><span class="candle"></span><span class="candle"></span><span class="candle"></span><span class="candle"></span></div></div><h2>HAPPY THADINGYUT!</h2><p>Wishing you a joyful and bright Thadingyut Festival. 🏮 🕯️ 🎆</p><div class="festival-icon" aria-hidden="true">✧ ✦ ✧</div></div></section>
+<section id="processingScreen" class="screen hidden"><div class="card center"><div class="label">02 / PROCESSING</div><h2>Optimizing your video</h2><p class="sub">Preserving original video and audio streams.</p><div class="ring" id="ring"><div class="ring-sparks" aria-hidden="true" id="ringSparks"></div><span id="percentage">0%</span></div><div class="status">PROCESSING VIDEO</div><p class="sub" id="processingName"></p><p class="note">Keep this page open until processing finishes.</p><button class="btn secondary" id="cancel" type="button">BACK TO UPLOAD</button></div></section>
+<section id="completeScreen" class="screen hidden"><div class="card center"><div class="success">✦</div><div class="label">03 / COMPLETE</div><h2>Processing complete!</h2><p class="sub">Your optimized MP4 is ready.</p><video id="completePreview" controls playsinline></video><button class="btn primary" id="download" type="button">DOWNLOAD OPTIMIZED MP4 ↓</button><p class="note">The encoded video/audio streams were copied without re-encoding.</p><button class="btn secondary" id="again" type="button">← OPTIMIZE ANOTHER VIDEO</button></div><div class="card guide"><div class="label">RECOMMENDED UPLOAD METHOD</div><ul><li>Upload using Microsoft Edge.</li><li>You don't need to set your video to “Only Me”.</li><li>Enable Desktop Site mode when supported.</li><li>Avoid re-editing your downloaded video.</li></ul><div class="badge">SUPPORT: #NEONCOMPRESS</div></div><div class="card thadingyut-card"><div class="festival-icon" aria-hidden="true">✦ ✧ ✦</div><div class="label">THADINGYUT FESTIVAL</div><div class="festival-scene" aria-hidden="true"><span class="festival-lantern" style="--left:9%;--fs:33px">🏮</span><span class="festival-lantern" style="--left:37%;--fs:41px;--delay:-1s">🏮</span><span class="festival-lantern" style="--left:76%;--fs:35px;--delay:-2s">🏮</span><div class="candle-row"><span class="candle"></span><span class="candle"></span><span class="candle"></span><span class="candle"></span><span class="candle"></span><span class="candle"></span><span class="candle"></span></div></div><h2>HAPPY THADINGYUT!</h2><p>Wishing you a joyful and bright Thadingyut Festival. 🏮 🕯️ 🎆</p><div class="festival-icon" aria-hidden="true">✧ ✦ ✧</div></div></section>
 <footer class="footer">NEON COMPRESS © 2026 · BUILT FOR CREATORS</footer>
 </main>
-<div class="overlay" id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle"><div class="modal"><div class="eyebrow">WELCOME TO THE EXPERIENCE</div><h1 class="hello" id="welcomeTitle">MINGALARPAR</h1><h2>Welcome to NEON COMPRESS</h2><p>Please check your internet connection before processing. An unstable connection may cause errors.</p><p>MAX QUALITY preserves your video’s original resolution and FPS. Please upload 1080p MP4 if you want 1080p output.</p><p>For the best experience, use Microsoft Edge, Quetta, or Google Chrome.</p><button class="btn primary" id="continue" type="button">CONTINUE →</button></div></div>
-<script>
-(async()=>{'use strict';
-const $=id=>document.getElementById(id);let file=null,url=null,progress=0,outputUrl=null,outputBlob=null,ffmpeg=null,busy=false,cancelRequested=false;const screens=['uploadScreen','processingScreen','completeScreen'];
+<div class="overlay" id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle"><div class="modal"><div class="eyebrow">WELCOME TO THE EXPERIENCE</div><h1 class="hello" id="welcomeTitle">MINGALARPAR</h1><h2>Welcome to NEON COMPRESS</h2><p>Please check your internet connection before processing. An unstable connection may cause errors.</p><p>Original video resolution and FPS are preserved in MAX QUALITY mode.</p><p>For the best experience, use Microsoft Edge, Quetta, or Google Chrome.</p><button class="btn primary" id="continue" type="button">CONTINUE →</button></div></div>
+<script type="module">
+import { optimizeVideo } from './src/processing.js';
+(()=>{'use strict';
+const $=id=>document.getElementById(id);let file=null,url=null,timer=null,progress=0,outputUrl=null,outputBlob=null,outputName=null,busy=false;const screens=['uploadScreen','processingScreen','completeScreen'];
+// V3: Local unlimited processing; no remote quota, login, or payments.
+function dailyDisplay(){ $('start').disabled=busy||!file; }
+
 // Lightweight CSS sparkles surrounding the processing percentage ring.
 const ringSparks=$('ringSparks');
 for(let i=0;i<26;i++){
@@ -71,65 +80,31 @@ for(let i=0;i<26;i++){
 }
 
 function page(n){screens.forEach((id,i)=>$(id).classList.toggle('hidden',i!==n));document.querySelectorAll('.step').forEach((el,i)=>el.classList.toggle('active',i<=n));window.scrollTo({top:0,behavior:'smooth'});}
- function setFile(f){if(!f)return;if(!/\.mp4$/i.test(f.name)){alert('MAX QUALITY requires an MP4 file.');return;}if(busy)return;if(url)URL.revokeObjectURL(url);if(outputUrl)URL.revokeObjectURL(outputUrl);outputUrl=null;outputBlob=null;file=f;url=URL.createObjectURL(f);$('fileName').textContent=f.name;$('fileSize').textContent=(f.size/1048576).toFixed(1)+' MB';$('uploadPreview').src=url;$('fileBox').style.display='block';$('start').disabled=false;}
- function setProgress(n){progress=Math.max(0,Math.min(100,Math.round(n)));$('percentage').textContent=progress+'%';$('ring').style.setProperty('--progress',progress+'%');}
- function reset(){if(busy)return;$('uploadPreview').pause();$('completePreview').pause();$('uploadPreview').removeAttribute('src');$('completePreview').removeAttribute('src');$('uploadPreview').load();$('completePreview').load();if(url)URL.revokeObjectURL(url);if(outputUrl)URL.revokeObjectURL(outputUrl);url=null;outputUrl=null;outputBlob=null;file=null;$('videoInput').value='';$('fileBox').style.display='none';$('start').disabled=true;setProgress(0);page(0);}
- $('continue').addEventListener('click',()=>{$('welcome').classList.add('hidden');sessionStorage.setItem('neon-welcomed','1');});if(sessionStorage.getItem('neon-welcomed')==='1')$('welcome').classList.add('hidden');
- $('videoInput').addEventListener('change',e=>setFile(e.target.files[0]));$('replace').addEventListener('click',()=>$('videoInput').click());
- const drop=$('drop');drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('drag');});drop.addEventListener('dragleave',()=>drop.classList.remove('drag'));drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('drag');setFile(e.dataTransfer.files[0]);});
- $('unlimited').addEventListener('click',()=>alert('Unlimited access is coming soon. Daily limit shown is illustrative.'));
- $('start').addEventListener('click',async()=>{
-  if(!file||busy)return;busy=true;cancelRequested=false;setProgress(0);$('processingName').textContent=file.name;page(1);$('start').disabled=true;
-  const inputName='neon-input-'+Date.now()+'.mp4',outputName='neon-output-'+Date.now()+'.mp4';
-  let progressHandler=null;
-  try{
-   // UMD build avoids esm.sh's blocked cross-origin dynamic module import.
-   // A blob-backed worker avoids GitHub Pages cross-origin Worker restrictions.
-   async function blobURL(remote,mime){
-     const response=await fetch(remote);
-     if(!response.ok)throw new Error('FFmpeg resource download failed ('+response.status+'): '+remote);
-     return URL.createObjectURL(new Blob([await response.arrayBuffer()],{type:mime}));
-   }
-   if(!window.FFmpegWASM?.FFmpeg){
-     $('processingName').textContent='Loading FFmpeg JavaScript…';
-     await new Promise((resolve,reject)=>{
-       const script=document.createElement('script');
-       script.src='https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/umd/ffmpeg.js';
-       script.onload=resolve;script.onerror=()=>reject(new Error('Cannot load FFmpeg script from CDN'));
-       document.head.appendChild(script);
-     });
-   }
-   if(!window.FFmpegWASM?.FFmpeg)throw new Error('FFmpeg library was not initialized');
-   if(!ffmpeg)ffmpeg=new window.FFmpegWASM.FFmpeg();
-   if(!ffmpeg.loaded){
-     $('processingName').textContent='Downloading FFmpeg engine (first run may take time)…';
-     const wrapper='https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/umd';
-     const core='https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd';
-     const [classWorkerURL,coreURL,wasmURL]=await Promise.all([
-       blobURL(wrapper+'/814.ffmpeg.js','text/javascript'),
-       blobURL(core+'/ffmpeg-core.js','text/javascript'),
-       blobURL(core+'/ffmpeg-core.wasm','application/wasm')
-     ]);
-     try{await ffmpeg.load({classWorkerURL,coreURL,wasmURL});}
-     finally{URL.revokeObjectURL(classWorkerURL);URL.revokeObjectURL(coreURL);URL.revokeObjectURL(wasmURL);}
-   }
-   if(cancelRequested)throw new Error('Cancelled');
-   progressHandler=({progress:p})=>{if(Number.isFinite(p))setProgress(Math.max(4,Math.min(96,p*92)));};ffmpeg.on('progress',progressHandler);
-   $('processingName').textContent='Reading '+file.name;
-   const bytes=new Uint8Array(await file.arrayBuffer());if(cancelRequested)throw new Error('Cancelled');
-   await ffmpeg.writeFile(inputName,bytes);setProgress(4);
-   $('processingName').textContent='Optimizing '+file.name;
-   // Stream-copy MP4 remux (no re-encoding). This does not increase visual quality.
-   const code=await ffmpeg.exec(['-i',inputName,'-map','0:v:0','-map','0:a?','-c','copy','-movflags','+faststart','-y',outputName]);
-   if(cancelRequested)throw new Error('Cancelled');if(code!==0)throw new Error('FFmpeg exited with code '+code);
-   const data=await ffmpeg.readFile(outputName);if(!(data instanceof Uint8Array)||!data.length)throw new Error('No output video was produced');
-   outputBlob=new Blob([new Uint8Array(data)],{type:'video/mp4'});outputUrl=URL.createObjectURL(outputBlob);$('completePreview').src=outputUrl;setProgress(100);page(2);
-  }catch(err){if(!cancelRequested)alert('Video processing failed: '+(err?.message||String(err))+'\nCheck internet access to the FFmpeg CDN, then try a smaller MP4 if needed.');page(0);}
-  finally{if(ffmpeg&&progressHandler)ffmpeg.off('progress',progressHandler);if(ffmpeg){for(const name of [inputName,outputName]){try{await ffmpeg.deleteFile(name)}catch{}}}busy=false;$('start').disabled=!file;}
- });
- $('download').addEventListener('click',()=>{if(!outputBlob||!outputUrl)return;const a=document.createElement('a');a.href=outputUrl;a.download=(file?.name||'video.mp4').replace(/\.mp4$/i,'')+'-neon-max-quality.mp4';document.body.appendChild(a);a.click();a.remove();});
- $('cancel').addEventListener('click',async()=>{if(!busy){page(0);return;}cancelRequested=true;$('processingName').textContent='Cancelling…';try{if(ffmpeg)await ffmpeg.terminate()}catch{}ffmpeg=null;});
- $('again').addEventListener('click',reset);window.addEventListener('beforeunload',()=>{if(url)URL.revokeObjectURL(url);if(outputUrl)URL.revokeObjectURL(outputUrl);});
+function setFile(f){if(!f)return;const valid=['video/mp4','video/quicktime','video/webm'];if(!valid.includes(f.type)&&!(/\.(mp4|mov|webm)$/i).test(f.name)){alert('Please choose an MP4, MOV or WEBM video.');return;}if(url)URL.revokeObjectURL(url);file=f;url=URL.createObjectURL(f);$('fileName').textContent=f.name;$('fileSize').textContent=(f.size/1048576).toFixed(1)+' MB';$('uploadPreview').src=url;$('fileBox').style.display='block';$('errorMessage').classList.add('hidden');dailyDisplay();}
+function stop(){if(timer!==null){clearInterval(timer);timer=null;}}
+function reset(){stop();if(outputUrl)URL.revokeObjectURL(outputUrl);outputUrl=null;outputBlob=null;outputName=null;$('uploadPreview').pause();$('completePreview').pause();$('uploadPreview').removeAttribute('src');$('completePreview').removeAttribute('src');$('uploadPreview').load();$('completePreview').load();if(url)URL.revokeObjectURL(url);url=null;file=null;$('videoInput').value='';$('fileBox').style.display='none';$('start').disabled=true;progress=0;page(0);dailyDisplay();}
+$('continue').addEventListener('click',()=>{$('welcome').classList.add('hidden');sessionStorage.setItem('neon-welcomed','1');});if(sessionStorage.getItem('neon-welcomed')==='1')$('welcome').classList.add('hidden');
+$('videoInput').addEventListener('change',e=>setFile(e.target.files[0]));$('replace').addEventListener('click',()=>$('videoInput').click());
+const drop=$('drop');drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('drag');});drop.addEventListener('dragleave',()=>drop.classList.remove('drag'));drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('drag');setFile(e.dataTransfer.files[0]);});
+$('start').addEventListener('click',async()=>{
+ if(!file||busy)return;
+ if(!/\.mp4$/i.test(file.name)){const el=$('errorMessage');el.textContent='MAX QUALITY supports MP4 input only. Please select an MP4 video.';el.classList.remove('hidden');return;}
+ busy=true;dailyDisplay();
+ progress=0;$('processingName').textContent=file.name;$('percentage').textContent='0%';$('ring').style.setProperty('--progress','0%');page(1);
+ $('cancel').disabled=true;
+ try {
+  const result=await optimizeVideo(file,(value)=>{progress=value;$('percentage').textContent=value+'%';$('ring').style.setProperty('--progress',value+'%');});
+  if(outputUrl)URL.revokeObjectURL(outputUrl);
+  outputBlob=result.blob;outputName=result.name;outputUrl=URL.createObjectURL(outputBlob);
+  $('completePreview').src=outputUrl;page(2);
+ } catch(err){const el=$('errorMessage');el.textContent='Video optimization failed: '+(err instanceof Error?err.message:String(err));el.classList.remove('hidden');page(0);}
+ finally{busy=false;$('cancel').disabled=false;dailyDisplay();}
+});
+$('download').addEventListener('click',()=>{
+ if(!outputBlob||!outputName)return;
+ const link=document.createElement('a');link.href=outputUrl;link.download=outputName;document.body.appendChild(link);link.click();link.remove();
+});
+$('cancel').addEventListener('click',()=>{if(!busy)page(0);});$('again').addEventListener('click',reset);window.addEventListener('beforeunload',()=>{stop();if(url)URL.revokeObjectURL(url);if(outputUrl)URL.revokeObjectURL(outputUrl);});
 // Decorative sky lanterns: animation only, no effect on video or controls.
 const lanternSky=$('lanternSky');
 for(let i=0;i<13;i++){
@@ -177,5 +152,6 @@ if(!reduced){
 
 })();
 </script>
+
 </body>
 </html>
