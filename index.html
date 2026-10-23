@@ -68,12 +68,46 @@
   });
 })();
 </script>
+<script>
+// Independent upload/preview handler: this must work even if the FFmpeg module fails to load.
+(function(){
+  const input=document.getElementById('videoInput');
+  const box=document.getElementById('fileBox');
+  const name=document.getElementById('fileName');
+  const size=document.getElementById('fileSize');
+  const preview=document.getElementById('uploadPreview');
+  const start=document.getElementById('start');
+  let previewUrl=null;
+  if(!input) return;
+  input.addEventListener('change',function(event){
+    const selected=event.target.files && event.target.files[0];
+    if(!selected) return;
+    if(!/\.mp4$/i.test(selected.name)){
+      alert('Please choose an MP4 video.');
+      input.value='';
+      window.neonSelectedFile=null;
+      if(start) start.disabled=true;
+      return;
+    }
+    window.neonSelectedFile=selected;
+    if(previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl=URL.createObjectURL(selected);
+    if(name) name.textContent=selected.name;
+    if(size) size.textContent=(selected.size/1048576).toFixed(1)+' MB';
+    if(preview) preview.src=previewUrl;
+    if(box) box.style.display='block';
+    if(start) start.disabled=false;
+  });
+  const replace=document.getElementById('replace');
+  if(replace) replace.addEventListener('click',function(){input.click();});
+})();
+</script>
 <script type="module">
 import { optimizeVideo } from './src/processing.js';
 (()=>{'use strict';
 const $=id=>document.getElementById(id);let file=null,url=null,timer=null,progress=0,outputUrl=null,outputBlob=null,outputName=null,busy=false;const screens=['uploadScreen','processingScreen','completeScreen'];
 // V3: Local unlimited processing; no remote quota, login, or payments.
-function dailyDisplay(){ $('start').disabled=busy||!file; }
+function dailyDisplay(){ $('start').disabled=busy||!(file||window.neonSelectedFile); }
 
 // Lightweight CSS sparkles surrounding the processing percentage ring.
 const ringSparks=$('ringSparks');
@@ -91,11 +125,12 @@ for(let i=0;i<26;i++){
 function page(n){screens.forEach((id,i)=>$(id).classList.toggle('hidden',i!==n));document.querySelectorAll('.step').forEach((el,i)=>el.classList.toggle('active',i<=n));window.scrollTo({top:0,behavior:'smooth'});}
 function setFile(f){if(!f)return;if(!/\.mp4$/i.test(f.name)){alert('Please choose an MP4 video.');return;}if(url)URL.revokeObjectURL(url);file=f;url=URL.createObjectURL(f);$('fileName').textContent=f.name;$('fileSize').textContent=(f.size/1048576).toFixed(1)+' MB';$('uploadPreview').src=url;$('fileBox').style.display='block';$('errorMessage').classList.add('hidden');dailyDisplay();}
 function stop(){if(timer!==null){clearInterval(timer);timer=null;}}
-function reset(){stop();if(outputUrl)URL.revokeObjectURL(outputUrl);outputUrl=null;outputBlob=null;outputName=null;$('uploadPreview').pause();$('completePreview').pause();$('uploadPreview').removeAttribute('src');$('completePreview').removeAttribute('src');$('uploadPreview').load();$('completePreview').load();if(url)URL.revokeObjectURL(url);url=null;file=null;$('videoInput').value='';$('fileBox').style.display='none';$('start').disabled=true;progress=0;page(0);dailyDisplay();}
+function reset(){stop();if(outputUrl)URL.revokeObjectURL(outputUrl);outputUrl=null;outputBlob=null;outputName=null;$('uploadPreview').pause();$('completePreview').pause();$('uploadPreview').removeAttribute('src');$('completePreview').removeAttribute('src');$('uploadPreview').load();$('completePreview').load();if(url)URL.revokeObjectURL(url);url=null;file=null;window.neonSelectedFile=null;$('videoInput').value='';$('fileBox').style.display='none';$('start').disabled=true;progress=0;page(0);dailyDisplay();}
 $('continue').addEventListener('click',()=>{$('welcome').classList.add('hidden');sessionStorage.setItem('neon-welcomed','1');});if(sessionStorage.getItem('neon-welcomed')==='1')$('welcome').classList.add('hidden');
-$('videoInput').addEventListener('change',e=>setFile(e.target.files[0]));$('replace').addEventListener('click',()=>$('videoInput').click());
+$('videoInput').addEventListener('change',e=>{if(e.target.files[0])setFile(e.target.files[0]);});
 const drop=$('drop');drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('drag');});drop.addEventListener('dragleave',()=>drop.classList.remove('drag'));drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('drag');setFile(e.dataTransfer.files[0]);});
 $('start').addEventListener('click',async()=>{
+ if(!file && window.neonSelectedFile) setFile(window.neonSelectedFile);
  if(!file||busy)return;
  if(!/\.mp4$/i.test(file.name)){const el=$('errorMessage');el.textContent='MAX QUALITY supports MP4 input only. Please select an MP4 video.';el.classList.remove('hidden');return;}
  busy=true;dailyDisplay();
