@@ -55,6 +55,19 @@
 <footer class="footer">NEON COMPRESS © 2026 · BUILT FOR CREATORS</footer>
 </main>
 <div class="overlay" id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle"><div class="modal"><div class="eyebrow">WELCOME TO THE EXPERIENCE</div><h1 class="hello" id="welcomeTitle">MINGALARPAR</h1><h2>Welcome to NEON COMPRESS</h2><p>The processing engine may need an internet connection to load the first time.</p><p>Original video resolution and FPS are preserved in MAX QUALITY mode.</p><p>For the best experience, use Microsoft Edge, Quetta, or Google Chrome.</p><button class="btn primary" id="continue" type="button">CONTINUE →</button></div></div>
+<script>
+// Welcome button works even when the processing module fails to load.
+(function () {
+  const welcome = document.getElementById('welcome');
+  const button = document.getElementById('continue');
+  if (!welcome || !button) return;
+  try { if (sessionStorage.getItem('neon-welcomed') === '1') welcome.classList.add('hidden'); } catch (_) {}
+  button.addEventListener('click', function () {
+    welcome.classList.add('hidden');
+    try { sessionStorage.setItem('neon-welcomed', '1'); } catch (_) {}
+  });
+})();
+</script>
 <script type="module">
 import { optimizeVideo } from './src/processing.js';
 (()=>{'use strict';
