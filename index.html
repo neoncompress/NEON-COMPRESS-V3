@@ -103,7 +103,8 @@
 })();
 </script>
 <script type="module">
-import { optimizeVideo } from './src/processing.js';
+// Load the processing engine only after the user presses START PROCESSING.
+// This keeps welcome, fireworks, lanterns, and upload UI alive if the engine fails to load.
 (()=>{'use strict';
 const $=id=>document.getElementById(id);let file=null,url=null,timer=null,progress=0,outputUrl=null,outputBlob=null,outputName=null,busy=false;const screens=['uploadScreen','processingScreen','completeScreen'];
 // V3: Local unlimited processing; no remote quota, login, or payments.
@@ -126,7 +127,7 @@ function page(n){screens.forEach((id,i)=>$(id).classList.toggle('hidden',i!==n))
 function setFile(f){if(!f)return;if(!/\.mp4$/i.test(f.name)){alert('Please choose an MP4 video.');return;}if(url)URL.revokeObjectURL(url);file=f;url=URL.createObjectURL(f);$('fileName').textContent=f.name;$('fileSize').textContent=(f.size/1048576).toFixed(1)+' MB';$('uploadPreview').src=url;$('fileBox').style.display='block';$('errorMessage').classList.add('hidden');dailyDisplay();}
 function stop(){if(timer!==null){clearInterval(timer);timer=null;}}
 function reset(){stop();if(outputUrl)URL.revokeObjectURL(outputUrl);outputUrl=null;outputBlob=null;outputName=null;$('uploadPreview').pause();$('completePreview').pause();$('uploadPreview').removeAttribute('src');$('completePreview').removeAttribute('src');$('uploadPreview').load();$('completePreview').load();if(url)URL.revokeObjectURL(url);url=null;file=null;window.neonSelectedFile=null;$('videoInput').value='';$('fileBox').style.display='none';$('start').disabled=true;progress=0;page(0);dailyDisplay();}
-$('continue').addEventListener('click',()=>{$('welcome').classList.add('hidden');sessionStorage.setItem('neon-welcomed','1');});if(sessionStorage.getItem('neon-welcomed')==='1')$('welcome').classList.add('hidden');
+$('continue').addEventListener('click',()=>{$('welcome').classList.add('hidden');try{sessionStorage.setItem('neon-welcomed','1');}catch(_){}});try{if(sessionStorage.getItem('neon-welcomed')==='1')$('welcome').classList.add('hidden');}catch(_){}
 $('videoInput').addEventListener('change',e=>{if(e.target.files[0])setFile(e.target.files[0]);});
 const drop=$('drop');drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('drag');});drop.addEventListener('dragleave',()=>drop.classList.remove('drag'));drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('drag');setFile(e.dataTransfer.files[0]);});
 $('start').addEventListener('click',async()=>{
@@ -137,6 +138,7 @@ $('start').addEventListener('click',async()=>{
  progress=0;$('processingName').textContent=file.name;$('percentage').textContent='0%';$('ring').style.setProperty('--progress','0%');page(1);
  $('cancel').disabled=true;
  try {
+  const { optimizeVideo } = await import('./src/processing.js');
   const result=await optimizeVideo(file,(value)=>{progress=value;$('percentage').textContent=value+'%';$('ring').style.setProperty('--progress',value+'%');});
   if(outputUrl)URL.revokeObjectURL(outputUrl);
   outputBlob=result.blob;outputName=result.name;outputUrl=URL.createObjectURL(outputBlob);
